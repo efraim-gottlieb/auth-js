@@ -1,25 +1,22 @@
-import { createUsersRepo } from "../repos/users.repo.js";
-import createUsersServices from "../services/auth.service.js";
-
-const usersRepo = createUsersRepo();
-const usersServices = createUsersServices(usersRepo);
+import container from "../container.js";
+const { usersService } = container;
 
 async function signin(req, res) {
   try {
     const { username, password } = req.body;
-    const user = await usersServices.createUser(username, password);
-    res.status(201).send({ msg: "user created", user: user });
+    const user = await usersService.createUser(username, password);
+    res.status(201).send({ msg: "user created", user });
   } catch (error) {
     res
       .status(error.status || 500)
-      .send(error.message || "Server internal error");
+      .send(error.message || "internal server error");
   }
 }
 
 async function login(req, res) {
   try {
     const { username, password } = req.body;
-    const token = await usersServices.login(username, password);
+    const token = await usersService.login(username, password);
     res.send(token);
   } catch (error) {
     res
